@@ -1,20 +1,9 @@
-var FilterItemsTable = React.createClass({
+var ItemRow = React.createClass({
 	render: function(){
-		return (
-			<div>
-				<Searchbar />
-				<ItemsTable dados={this.props.dados}/>
-			</div>
-		);
-	}
-});
-
-var Searchbar = React.createClass({
-	render: function(){
-		return (
-			<form>
-				<input type="text" placeholder="search"/>
-			</form>
+		var name = this.props.name;
+		var id = this.props.key;
+		return(
+			<tr><td>{name}</td></tr>
 		);
 	}
 });
@@ -23,15 +12,18 @@ var ItemsTable = React.createClass({
 	render: function(){
 		var list = [];
 		var dados = this.props.dados;
-		dados.map(function(obj){
-			list.push(<ItemRow key={obj.id} name={obj.name} />);
-		});
-		console.log(list);
+
+        dados.forEach(function(obj) {
+            if (obj.name.toLowerCase().indexOf(this.props.queryString.toLowerCase()) === -1) {
+                return;
+            }
+            list.push(<ItemRow key={obj.id} name={obj.name} />);
+        }.bind(this));
 
 		return (
 			<table>
 				<thead>
-					<tr><th>Tabela de produtos</th></tr>
+					<tr><th>Tabela de Itens</th></tr>
 				</thead>
 				<tbody>
 					{list}
@@ -41,12 +33,51 @@ var ItemsTable = React.createClass({
 	}
 });
 
-var ItemRow = React.createClass({
+var Searchbar = React.createClass({
+	handleChange: function(){
+		this.props.onUserIput(
+			this.refs.queryStringInput.value
+		);
+	},
+
 	render: function(){
-		var name = this.props.name;
-		var id = this.props.key;
-		return(
-			<tr><td>{name}</td></tr>
+		return (
+			<form>
+				<input 
+					type="text" 
+					placeholder="search" 
+					value={this.props.queryString}
+					ref='queryStringInput'
+					onChange={this.handleChange}
+				/>
+			</form>
+		);
+	}
+});
+
+var FilterItemsTable = React.createClass({
+	getInitialState: function(){
+		return {queryString: ''}
+	},
+	
+	handleUserInput: function(query){
+		this.setState({
+			queryString: query
+		});
+	},
+
+	render: function(){
+		return (
+			<div>
+				<Searchbar 
+					queryString={this.state.queryString}
+					onUserIput={this.handleUserInput}
+				/>
+				<ItemsTable 
+					queryString={this.state.queryString}
+					dados={this.props.dados}
+				/>
+			</div>
 		);
 	}
 });
