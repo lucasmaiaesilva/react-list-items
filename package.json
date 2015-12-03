@@ -1,5 +1,5 @@
 {
-  "name": "React list items",
+  "name": "List of items searchable on front-end with react",
   "version": "1.0.0",
   "description": "A simple react app for list component items",
   "main": "index.js",
