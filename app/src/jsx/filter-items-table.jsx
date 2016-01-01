@@ -1,9 +1,16 @@
 var ItemRow = React.createClass({
+	
+	renderElement: function() {
+		return <td>{this.props.obj.id} - {this.props.obj.name}</td>
+	},
+
 	render: function(){
 		var name = this.props.name;
 		var id = this.props.key;
 		return(
-			<tr><td>{name}</td></tr>
+			<tr>
+				{this.renderElement()}
+			</tr>
 		);
 	}
 });
@@ -17,8 +24,9 @@ var ItemsTable = React.createClass({
             if (obj.name.toLowerCase().indexOf(this.props.queryString.toLowerCase()) === -1) {
                 return;
             }
-            list.push(<ItemRow key={obj.id} name={obj.name} />);
+            list.push(<ItemRow key={obj.id} obj={obj} />);
         }.bind(this));
+
 
 		return (
 			<table>
